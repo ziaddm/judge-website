@@ -6,14 +6,18 @@ $dbname = getenv('MYSQL_DATABASE') ?: getenv('DB_NAME') ?: 'grading_system';
 $username = getenv('MYSQL_USER') ?: getenv('DB_USER') ?: 'root';
 $password = getenv('MYSQL_PASSWORD') ?: getenv('DB_PASSWORD') ?: ''; // Default XAMPP password is empty
 
-// Try mysqli first (XAMPP), fallback to check if it exists
+// Debug: Show connection details (remove this in production!)
+if ($host === 'localhost' && isset($_SERVER['RAILWAY_ENVIRONMENT'])) {
+    die("ERROR: MySQL database not found. Please add a MySQL database in Railway and link it to this service. Current host: $host");
+}
+
+// Try mysqli connection
 if (function_exists('mysqli_connect')) {
     $conn = @mysqli_connect($host, $username, $password, $dbname);
     if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
+        die("Connection failed to $host: " . mysqli_connect_error());
     }
 } else {
-    // mysqli not available, show error
     die("mysqli extension not available. Please install php-mysqli.");
 }
 ?>
