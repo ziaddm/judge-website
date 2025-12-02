@@ -1,11 +1,11 @@
 <?php
 // Database connection - works on both XAMPP and Railway
-// Railway uses MYSQL_* variables, XAMPP uses defaults
-$host = getenv('MYSQL_HOST') ?: getenv('DB_HOST') ?: 'localhost';
-$dbname = getenv('MYSQL_DATABASE') ?: getenv('DB_NAME') ?: 'railway';
-$username = getenv('MYSQL_USER') ?: getenv('DB_USER') ?: 'root';
-$password = getenv('MYSQL_PASSWORD') ?: getenv('DB_PASSWORD') ?: ''; // Default XAMPP password is empty
-$port = getenv('MYSQL_PORT') ?: 3306;
+// Railway uses MYSQLHOST, MYSQLPORT, etc (without underscore prefix)
+$host = getenv('MYSQLHOST') ?: getenv('MYSQL_HOST') ?: getenv('DB_HOST') ?: 'localhost';
+$dbname = getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: getenv('DB_NAME') ?: 'railway';
+$username = getenv('MYSQLUSER') ?: getenv('MYSQL_USER') ?: getenv('DB_USER') ?: 'root';
+$password = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD') ?: getenv('DB_PASSWORD') ?: ''; // Default XAMPP password is empty
+$port = getenv('MYSQLPORT') ?: getenv('MYSQL_PORT') ?: 3306;
 
 // Try mysqli connection
 if (function_exists('mysqli_connect')) {
