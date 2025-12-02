@@ -1,9 +1,9 @@
 <?php
-// Database connection
-$host = 'localhost';
-$dbname = 'grading_system';
-$username = 'root';
-$password = ''; // Default XAMPP password is empty
+// Database connection - works on both XAMPP and Railway
+$host = getenv('DB_HOST') ?: 'localhost';
+$dbname = getenv('DB_NAME') ?: 'grading_system';
+$username = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASSWORD') ?: ''; // Default XAMPP password is empty
 
 $conn = mysqli_connect($host, $username, $password, $dbname);
 
