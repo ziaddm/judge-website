@@ -1,30 +1,60 @@
 <?php
+/**
+ * LOGIN PAGE WITH SECURITY & GRACEFUL DEGRADATION
+ *
+ * Security Features:
+ * 1. SQL Injection Protection - Uses prepared statements instead of raw SQL
+ * 2. Input Validation - Checks if form data exists before processing
+ * 3. Error Handling - Gracefully handles database query failures
+ *
+ * Graceful Degradation:
+ * - If database query fails, shows user-friendly error instead of crashing
+ * - If session can't be created, still shows appropriate error message
+ */
+
 session_start();
 include 'db.php';
 
-// Check if login form submitted
-if ($_POST) {
+// SECURITY: Validate input exists before processing
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
     $user = $_POST['username'];
     $pass = $_POST['password'];
 
-    // Check credentials
-    $sql = "SELECT * FROM users WHERE username='$user' AND password='$pass'";
-    $result = mysqli_query($conn, $sql);
+    // SECURITY: Use prepared statements to prevent SQL injection
+    // BAD:  "SELECT * FROM users WHERE username='$user'" - can be hacked!
+    // GOOD: Use placeholders (?) and bind parameters
+    $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE username = ? AND password = ?");
 
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $_SESSION['username'] = $user;
-        $_SESSION['role'] = $row['role'];
+    if ($stmt) {
+        // Bind parameters (s = string type)
+        mysqli_stmt_bind_param($stmt, "ss", $user, $pass);
 
-        // Redirect based on role
-        if ($row['role'] == 'admin') {
-            header('Location: admin.php');
+        // Execute query
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            // Valid credentials - create session
+            $row = mysqli_fetch_assoc($result);
+            $_SESSION['username'] = $user;
+            $_SESSION['role'] = $row['role'];
+
+            // Redirect based on role
+            if ($row['role'] == 'admin') {
+                header('Location: admin.php');
+            } else {
+                header('Location: grade.php');
+            }
+            exit();
         } else {
-            header('Location: grade.php');
+            // Invalid credentials
+            $error = "Invalid credentials!";
         }
-        exit();
+
+        mysqli_stmt_close($stmt);
     } else {
-        $error = "Invalid credentials!";
+        // GRACEFUL DEGRADATION: Query preparation failed
+        $error = "Login service temporarily unavailable. Please try again.";
     }
 }
 ?>

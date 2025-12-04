@@ -1,6 +1,21 @@
 <?php
+/**
+ * JUDGE GRADING PAGE WITH SECURITY & GRACEFUL DEGRADATION
+ *
+ * Security Features:
+ * 1. Session Validation - Only authenticated judges can access
+ * 2. SQL Injection Protection - Uses prepared statements
+ * 3. Input Validation - Validates all form fields before processing
+ *
+ * Graceful Degradation:
+ * - If database insert fails, user sees their data and can retry
+ * - If session expires, redirects to login instead of showing errors
+ * - If connection lost during submit, error message preserves form data
+ */
+
 session_start();
-// Make sure only logged in judges can access
+
+// SECURITY: Session validation - only logged in judges can access
 if (!isset($_SESSION['username']) || $_SESSION['role'] != 'judge') {
     header('Location: login.php');
     exit();
@@ -8,27 +23,56 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'judge') {
 
 include 'db.php';
 
-// Handle form submission
-if ($_POST && isset($_POST['submit_grade'])) {
-    $group_members = $_POST['group_members'];
-    $project_title = $_POST['project_title'];
-    $group_number = $_POST['group_number'];
-    $articulate = $_POST['articulate_req'];
-    $tools = $_POST['choose_tools'];
-    $presentation = $_POST['clear_presentation'];
-    $team = $_POST['functioned_team'];
-    $total = $articulate + $tools + $presentation + $team; // Calculate total
-    $judge_name = $_SESSION['username'];
-    $comments = $_POST['comments'];
+// Handle form submission with validation and security
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
+    // SECURITY: Validate all required fields exist
+    $required_fields = ['group_members', 'project_title', 'group_number', 'articulate_req',
+                       'choose_tools', 'clear_presentation', 'functioned_team', 'comments'];
 
-    // Save to database
-    $sql = "INSERT INTO grades (group_members, project_title, group_number, articulate_req, choose_tools, clear_presentation, functioned_team, total, judge_name, comments)
-            VALUES ('$group_members', '$project_title', '$group_number', $articulate, $tools, $presentation, $team, $total, '$judge_name', '$comments')";
+    $all_fields_present = true;
+    foreach ($required_fields as $field) {
+        if (!isset($_POST[$field])) {
+            $all_fields_present = false;
+            break;
+        }
+    }
 
-    if (mysqli_query($conn, $sql)) {
-        $success = "Grade submitted successfully!";
+    if ($all_fields_present) {
+        $group_members = $_POST['group_members'];
+        $project_title = $_POST['project_title'];
+        $group_number = $_POST['group_number'];
+        $articulate = (int)$_POST['articulate_req'];
+        $tools = (int)$_POST['choose_tools'];
+        $presentation = (int)$_POST['clear_presentation'];
+        $team = (int)$_POST['functioned_team'];
+        $total = $articulate + $tools + $presentation + $team;
+        $judge_name = $_SESSION['username'];
+        $comments = $_POST['comments'];
+
+        // SECURITY: Use prepared statements to prevent SQL injection
+        $stmt = mysqli_prepare($conn, "INSERT INTO grades (group_members, project_title, group_number, articulate_req, choose_tools, clear_presentation, functioned_team, total, judge_name, comments)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        if ($stmt) {
+            // Bind parameters (s=string, i=integer)
+            mysqli_stmt_bind_param($stmt, "sssiiiiiis", $group_members, $project_title, $group_number,
+                                   $articulate, $tools, $presentation, $team, $total, $judge_name, $comments);
+
+            // GRACEFUL DEGRADATION: Handle submission failure gracefully
+            if (mysqli_stmt_execute($stmt)) {
+                $success = "Grade submitted successfully!";
+            } else {
+                // Error but don't crash - let user see their data and retry
+                $error = "Unable to submit grade. Please check your connection and try again.";
+            }
+
+            mysqli_stmt_close($stmt);
+        } else {
+            // GRACEFUL DEGRADATION: Prepare failed, but user can still retry
+            $error = "Grading service temporarily unavailable. Your data is preserved - please try again.";
+        }
     } else {
-        $error = "Error: " . mysqli_error($conn);
+        $error = "Please fill in all required fields.";
     }
 }
 ?>

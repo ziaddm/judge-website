@@ -1,6 +1,20 @@
 <?php
+/**
+ * ADMIN DASHBOARD WITH SECURITY & GRACEFUL DEGRADATION
+ *
+ * Security Features:
+ * 1. Session Validation - Only authenticated admins can access
+ * 2. No SQL injection risk - Read-only queries with no user input
+ *
+ * Graceful Degradation:
+ * - If no grades exist yet, shows "No data" instead of errors
+ * - If query fails, shows admin dashboard with error message
+ * - Dashboard remains functional even if stats calculation fails
+ */
+
 session_start();
-// Make sure only admin can access
+
+// SECURITY: Session validation - only admin can access
 if (!isset($_SESSION['username']) || $_SESSION['role'] != 'admin') {
     header('Location: login.php');
     exit();
@@ -8,17 +22,32 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'admin') {
 
 include 'db.php';
 
-// Get all grades grouped by group number and calculate averages
+// GRACEFUL DEGRADATION: Initialize variables with defaults
+$result = null;
+$stats = ['total_groups' => 0, 'total_grades' => 0, 'overall_avg' => 0];
+$db_error = null;
+
+// Get all grades grouped by group number
 $sql = "SELECT group_number, group_members, project_title, AVG(total) as average_grade, COUNT(*) as num_judges
         FROM grades
         GROUP BY group_number
         ORDER BY group_number";
 $result = mysqli_query($conn, $sql);
 
-// Calculate stats
+// Calculate overall stats
 $stats_sql = "SELECT COUNT(DISTINCT group_number) as total_groups, COUNT(*) as total_grades, AVG(total) as overall_avg FROM grades";
 $stats_result = mysqli_query($conn, $stats_sql);
-$stats = mysqli_fetch_assoc($stats_result);
+
+// GRACEFUL DEGRADATION: Handle query failures
+if ($stats_result) {
+    $stats = mysqli_fetch_assoc($stats_result);
+    // Handle case where no grades exist yet
+    if ($stats['total_groups'] === null) {
+        $stats = ['total_groups' => 0, 'total_grades' => 0, 'overall_avg' => 0];
+    }
+} else {
+    $db_error = "Unable to load statistics. Data may be temporarily unavailable.";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
