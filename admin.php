@@ -28,7 +28,12 @@ $stats = ['total_groups' => 0, 'total_grades' => 0, 'overall_avg' => 0];
 $db_error = null;
 
 // Get all grades grouped by group number
-$sql = "SELECT group_number, group_members, project_title, AVG(total) as average_grade, COUNT(*) as num_judges
+// Use ANY_VALUE() for non-aggregated columns (fixes strict SQL mode)
+$sql = "SELECT group_number,
+               ANY_VALUE(group_members) as group_members,
+               ANY_VALUE(project_title) as project_title,
+               AVG(total) as average_grade,
+               COUNT(*) as num_judges
         FROM grades
         GROUP BY group_number
         ORDER BY group_number";
