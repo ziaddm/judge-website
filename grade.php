@@ -261,19 +261,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
         .criteria-box label {
             color: #111827;
             font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .category-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .category-btn {
+            flex: 1;
+            padding: 10px 16px;
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-btn:hover {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+        }
+
+        .category-btn.active {
+            background: #B31414;
+            border-color: #B31414;
+            color: white;
         }
 
         .score-input-group {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 10px;
         }
 
         .score-input-group input {
             width: 90px;
             font-size: 15px;
             font-weight: 600;
+        }
+
+        .score-input-group input:disabled {
+            background: #f3f4f6;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
 
         .score-input-group span {
@@ -348,7 +386,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
                     <img src="rutgers-logo.png" alt="Rutgers University">
                 </div>
                 <div class="header-title">
-                    <h1>CS Project Grading</h1>
+                    <h1>Project Grading</h1>
                     <p>Logged in as: <strong><?php echo $_SESSION['username']; ?></strong></p>
                 </div>
             </div>
@@ -388,38 +426,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
                     </div>
 
                     <!-- Grading Criteria Section -->
-                    <h3 class="section-title">Grading Criteria (0-15 points each)</h3>
+                    <h3 class="section-title">Grading Criteria</h3>
+                    <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;">Select category for each criterion, then enter score within the allowed range.</p>
 
                     <div class="criteria-box">
-                        <label for="articulate_req">1. Articulate Requirements</label>
-                        <div class="score-input-group">
-                            <input type="number" id="articulate_req" name="articulate_req" min="0" max="15" value="0" oninput="calculateTotal()" required>
-                            <span>/ 15 points</span>
+                        <label>1. Articulate Requirements</label>
+                        <div class="category-buttons">
+                            <button type="button" class="category-btn" onclick="selectCategory('articulate', 'developing', 1, 10)">
+                                Developing (1-10)
+                            </button>
+                            <button type="button" class="category-btn" onclick="selectCategory('articulate', 'accomplished', 10, 15)">
+                                Accomplished (10-15)
+                            </button>
                         </div>
+                        <div class="score-input-group">
+                            <input type="number" id="articulate_req" name="articulate_req" min="1" max="15" disabled required>
+                            <span id="articulate_range">/ -- points</span>
+                        </div>
+                        <input type="hidden" id="articulate_category" name="articulate_category">
                     </div>
 
                     <div class="criteria-box">
-                        <label for="choose_tools">2. Choose Appropriate Tools/Methods</label>
-                        <div class="score-input-group">
-                            <input type="number" id="choose_tools" name="choose_tools" min="0" max="15" value="0" oninput="calculateTotal()" required>
-                            <span>/ 15 points</span>
+                        <label>2. Choose Appropriate Tools/Methods</label>
+                        <div class="category-buttons">
+                            <button type="button" class="category-btn" onclick="selectCategory('tools', 'developing', 1, 10)">
+                                Developing (1-10)
+                            </button>
+                            <button type="button" class="category-btn" onclick="selectCategory('tools', 'accomplished', 10, 15)">
+                                Accomplished (10-15)
+                            </button>
                         </div>
+                        <div class="score-input-group">
+                            <input type="number" id="choose_tools" name="choose_tools" min="1" max="15" disabled required>
+                            <span id="tools_range">/ -- points</span>
+                        </div>
+                        <input type="hidden" id="tools_category" name="tools_category">
                     </div>
 
                     <div class="criteria-box">
-                        <label for="clear_presentation">3. Clear Oral Presentation</label>
-                        <div class="score-input-group">
-                            <input type="number" id="clear_presentation" name="clear_presentation" min="0" max="15" value="0" oninput="calculateTotal()" required>
-                            <span>/ 15 points</span>
+                        <label>3. Clear Oral Presentation</label>
+                        <div class="category-buttons">
+                            <button type="button" class="category-btn" onclick="selectCategory('presentation', 'developing', 1, 10)">
+                                Developing (1-10)
+                            </button>
+                            <button type="button" class="category-btn" onclick="selectCategory('presentation', 'accomplished', 10, 15)">
+                                Accomplished (10-15)
+                            </button>
                         </div>
+                        <div class="score-input-group">
+                            <input type="number" id="clear_presentation" name="clear_presentation" min="1" max="15" disabled required>
+                            <span id="presentation_range">/ -- points</span>
+                        </div>
+                        <input type="hidden" id="presentation_category" name="presentation_category">
                     </div>
 
                     <div class="criteria-box">
-                        <label for="functioned_team">4. Functioned Well as a Team</label>
-                        <div class="score-input-group">
-                            <input type="number" id="functioned_team" name="functioned_team" min="0" max="15" value="0" oninput="calculateTotal()" required>
-                            <span>/ 15 points</span>
+                        <label>4. Functioned Well as a Team</label>
+                        <div class="category-buttons">
+                            <button type="button" class="category-btn" onclick="selectCategory('team', 'developing', 1, 10)">
+                                Developing (1-10)
+                            </button>
+                            <button type="button" class="category-btn" onclick="selectCategory('team', 'accomplished', 10, 15)">
+                                Accomplished (10-15)
+                            </button>
                         </div>
+                        <div class="score-input-group">
+                            <input type="number" id="functioned_team" name="functioned_team" min="1" max="15" disabled required>
+                            <span id="team_range">/ -- points</span>
+                        </div>
+                        <input type="hidden" id="team_category" name="team_category">
                     </div>
 
                     <!-- Total Score Display -->
@@ -447,6 +522,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
     </div>
 
     <script>
+        // Mapping of field names to their input IDs
+        const fieldMap = {
+            'articulate': 'articulate_req',
+            'tools': 'choose_tools',
+            'presentation': 'clear_presentation',
+            'team': 'functioned_team'
+        };
+
+        // Select category for a criterion (Developing or Accomplished)
+        function selectCategory(field, category, min, max) {
+            const inputId = fieldMap[field];
+            const input = document.getElementById(inputId);
+            const rangeSpan = document.getElementById(field + '_range');
+            const categoryInput = document.getElementById(field + '_category');
+            const buttons = document.querySelectorAll(`#${inputId}`).item(0).closest('.criteria-box').querySelectorAll('.category-btn');
+
+            // Update button states
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Enable input and set min/max boundaries
+            input.disabled = false;
+            input.min = min;
+            input.max = max;
+            input.value = min; // Default to minimum value
+
+            // Update range display
+            rangeSpan.textContent = `/ ${max} points`;
+
+            // Store category
+            categoryInput.value = category;
+
+            // Add validation to enforce boundaries
+            input.oninput = function() {
+                enforceMinMax(this, min, max);
+                calculateTotal();
+            };
+
+            calculateTotal();
+        }
+
+        // Enforce min/max boundaries - prevent user from crossing them
+        function enforceMinMax(input, min, max) {
+            let value = parseInt(input.value);
+
+            if (isNaN(value) || value < min) {
+                input.value = min;
+            } else if (value > max) {
+                input.value = max;
+            }
+        }
+
         // Calculate total score and update progress bar
         function calculateTotal() {
             var art = parseInt(document.getElementById('articulate_req').value) || 0;
