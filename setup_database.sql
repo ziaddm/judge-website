@@ -28,10 +28,11 @@ CREATE TABLE IF NOT EXISTS grades (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert 4 judges and 1 admin (password is '123' for all)
+-- Insert 4 judges and 1 admin (password is '123' for all, hashed with bcrypt)
+-- NOTE: These are bcrypt hashes of '123' - use password_verify() in PHP to check
 INSERT INTO users (username, password, role) VALUES
-('judge1', '123', 'judge'),
-('judge2', '123', 'judge'),
-('judge3', '123', 'judge'),
-('judge4', '123', 'judge'),
-('admin', '123', 'admin');
+('judge1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'judge'),
+('judge2', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'judge'),
+('judge3', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'judge'),
+('judge4', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'judge'),
+('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');

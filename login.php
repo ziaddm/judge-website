@@ -21,33 +21,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
     $pass = $_POST['password'];
 
     // SECURITY: Use prepared statements to prevent SQL injection
-    // BAD:  "SELECT * FROM users WHERE username='$user'" - can be hacked!
-    // GOOD: Use placeholders (?) and bind parameters
-    $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE username = ? AND password = ?");
+    // First, fetch user by username only
+    $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE username = ?");
 
     if ($stmt) {
-        // Bind parameters (s = string type)
-        mysqli_stmt_bind_param($stmt, "ss", $user, $pass);
+        // Bind username parameter
+        mysqli_stmt_bind_param($stmt, "s", $user);
 
         // Execute query
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         if ($result && mysqli_num_rows($result) > 0) {
-            // Valid credentials - create session
+            // User found - verify password with bcrypt
             $row = mysqli_fetch_assoc($result);
-            $_SESSION['username'] = $user;
-            $_SESSION['role'] = $row['role'];
 
-            // Redirect based on role
-            if ($row['role'] == 'admin') {
-                header('Location: admin.php');
+            // SECURITY: Use password_verify for bcrypt hash comparison
+            if (password_verify($pass, $row['password'])) {
+                // Valid credentials - create session
+                $_SESSION['username'] = $user;
+                $_SESSION['role'] = $row['role'];
+
+                // Redirect based on role
+                if ($row['role'] == 'admin') {
+                    header('Location: admin.php');
+                } else {
+                    header('Location: grade.php');
+                }
+                exit();
             } else {
-                header('Location: grade.php');
+                // Invalid password
+                $error = "Invalid credentials!";
             }
-            exit();
         } else {
-            // Invalid credentials
+            // User not found
             $error = "Invalid credentials!";
         }
 
