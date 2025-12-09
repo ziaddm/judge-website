@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CS Grading System</title>
+    <title>Login - Grading System</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -163,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
     <div class="container">
         <div class="logo">
             <img src="rutgers-logo.png" alt="Rutgers University">
-            <h2>CS Project Grading System</h2>
+            <h2>Project Grading System</h2>
             <p class="subtitle">Sign in to access the grading platform</p>
         </div>
 

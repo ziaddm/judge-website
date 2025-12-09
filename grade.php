@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
 
         .header-title h1 {
             font-size: 18px;
-            color: #B31414;
+            color: #000000;
             font-weight: 600;
         }
 

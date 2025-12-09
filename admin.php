@@ -100,7 +100,7 @@ if ($stats_result) {
 
         .header-title h1 {
             font-size: 18px;
-            color: #B31414;
+            color: #000000;
             font-weight: 600;
         }
 
@@ -292,7 +292,7 @@ if ($stats_result) {
                 </div>
                 <div class="header-title">
                     <h1>Admin Dashboard</h1>
-                    <p>CS Project Grading System</p>
+                    <p>Project Grading System</p>
                 </div>
             </div>
             <a href="logout.php" class="logout-btn">Logout</a>
