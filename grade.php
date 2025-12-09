@@ -115,10 +115,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
             gap: 15px;
         }
 
+        .header-logo img {
+            height: 40px;
+            width: auto;
+        }
 
         .header-title h1 {
             font-size: 18px;
-            color: #111827;
+            color: #B31414;
             font-weight: 600;
         }
 
@@ -129,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
 
         .logout-btn {
             padding: 8px 16px;
-            background: #dc2626;
+            background: #B31414;
             color: white;
             text-decoration: none;
             border-radius: 6px;
@@ -139,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
         }
 
         .logout-btn:hover {
-            background: #b91c1c;
+            background: #8B0F0F;
         }
 
         /* Main Container */
@@ -178,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
         }
 
         .form-header {
-            background: #2563eb;
+            background: #B31414;
             color: white;
             padding: 24px 30px;
         }
@@ -237,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
         input[type="number"]:focus,
         textarea:focus {
             outline: none;
-            border-color: #2563eb;
+            border-color: #B31414;
         }
 
         textarea {
@@ -279,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
 
         /* Total Score Display */
         .total-score {
-            background: #2563eb;
+            background: #B31414;
             color: white;
             padding: 20px;
             border-radius: 6px;
@@ -320,7 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
         .submit-btn {
             width: 100%;
             padding: 13px;
-            background: #2563eb;
+            background: #B31414;
             color: white;
             border: none;
             border-radius: 6px;
@@ -340,6 +344,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_grade'])) {
     <div class="header">
         <div class="header-content">
             <div class="header-left">
+                <div class="header-logo">
+                    <img src="rutgers-logo.png" alt="Rutgers University">
+                </div>
                 <div class="header-title">
                     <h1>CS Project Grading</h1>
                     <p>Logged in as: <strong><?php echo $_SESSION['username']; ?></strong></p>

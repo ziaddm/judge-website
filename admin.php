@@ -93,10 +93,14 @@ if ($stats_result) {
             gap: 15px;
         }
 
+        .header-logo img {
+            height: 40px;
+            width: auto;
+        }
 
         .header-title h1 {
             font-size: 18px;
-            color: #111827;
+            color: #B31414;
             font-weight: 600;
         }
 
@@ -107,7 +111,7 @@ if ($stats_result) {
 
         .logout-btn {
             padding: 8px 16px;
-            background: #dc2626;
+            background: #B31414;
             color: white;
             text-decoration: none;
             border-radius: 6px;
@@ -117,7 +121,7 @@ if ($stats_result) {
         }
 
         .logout-btn:hover {
-            background: #b91c1c;
+            background: #8B0F0F;
         }
 
         /* Container */
@@ -158,7 +162,7 @@ if ($stats_result) {
         }
 
         .stat-description {
-            color: #2563eb;
+            color: #B31414;
             font-size: 13px;
         }
 
@@ -189,7 +193,7 @@ if ($stats_result) {
         }
 
         .tab-button.active {
-            background: #2563eb;
+            background: #B31414;
             color: white;
         }
 
@@ -227,7 +231,7 @@ if ($stats_result) {
         }
 
         th {
-            background: #2563eb;
+            background: #B31414;
             color: white;
             padding: 14px;
             text-align: left;
@@ -283,6 +287,9 @@ if ($stats_result) {
     <div class="header">
         <div class="header-content">
             <div class="header-left">
+                <div class="header-logo">
+                    <img src="rutgers-logo.png" alt="Rutgers University">
+                </div>
                 <div class="header-title">
                     <h1>Admin Dashboard</h1>
                     <p>CS Project Grading System</p>

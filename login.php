@@ -84,13 +84,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
             max-width: 400px;
             border: 1px solid #e5e7eb;
         }
-        /* Logo section */
+        /* Rutgers Logo */
         .logo {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+        }
+        .logo img {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 20px;
         }
         h2 {
-            color: #111827;
+            color: #B31414;
             text-align: center;
             margin-bottom: 8px;
             font-size: 22px;
@@ -124,12 +129,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
         }
         input:focus {
             outline: none;
-            border-color: #2563eb;
+            border-color: #B31414;
         }
         button {
             width: 100%;
             padding: 13px;
-            background: #2563eb;
+            background: #B31414;
             color: white;
             border: none;
             border-radius: 6px;
@@ -140,10 +145,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
             margin-top: 10px;
         }
         button:hover {
-            background: #1d4ed8;
+            background: #8B0F0F;
         }
         .error {
-            color: #dc2626;
+            color: #B31414;
             background: #fee2e2;
             padding: 12px;
             border-radius: 6px;
@@ -157,6 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
 <body>
     <div class="container">
         <div class="logo">
+            <img src="rutgers-logo.png" alt="Rutgers University">
             <h2>CS Project Grading System</h2>
             <p class="subtitle">Sign in to access the grading platform</p>
         </div>
