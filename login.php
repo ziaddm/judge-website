@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
             margin-bottom: 20px;
         }
         h2 {
-            color: #B31414;
+            color: #000000;
             text-align: center;
             margin-bottom: 8px;
             font-size: 22px;
